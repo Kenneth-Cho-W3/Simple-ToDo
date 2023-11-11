@@ -6,6 +6,9 @@ enum Command {
     #[structopt(name = "add", about = "Add a new task")]
     Add { task: String },
 
+    #[structopt(name = "addbatch", about = "Add multiple tasks at once")]
+    AddBatch { tasks: Vec<String> },
+
     #[structopt(name = "list", about = "List all tasks")]
     List,
 
@@ -61,6 +64,13 @@ impl TodoList {
             TodoList::new()
         }
     }
+
+    fn add_batch_tasks(&mut self, tasks: Vec<String>) {
+        for task in tasks {
+            self.tasks.push(task);
+        }
+        self.save_to_file();
+    }
 }
 
 fn main() {
@@ -69,6 +79,7 @@ fn main() {
 
     match command {
         Command::Add { task } => todo_list.add_task(task),
+        Command::AddBatch { tasks } => todo_list.add_batch_tasks(tasks),
         Command::List => todo_list.list_tasks(),
         Command::Complete { task_index } => todo_list.complete_task(task_index),
     }
